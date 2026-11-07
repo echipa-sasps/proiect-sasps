@@ -1,0 +1,8 @@
+<form method="post" action="{{ url_for('change_status', book_id=book.id, action='imprumuta' if book.available else 'returneaza') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+  <input type="hidden" name="view" value="{{ view|default('index') }}">
+  <input type="hidden" name="q" value="{{ query|default('') }}">
+  <input type="hidden" name="status" value="{{ status|default('all') }}">
+  <input type="hidden" name="page" value="{{ page|default(1) }}">
+  <button class="action-button {{ 'borrow' if book.available else 'return' }}" type="submit">{{ 'Împrumută' if book.available else 'Returnează' }}<span aria-hidden="true">{{ '↗' if book.available else '↩' }}</span></button>
+</form>

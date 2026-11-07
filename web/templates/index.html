@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="intro" aria-labelledby="page-title">
+  <div><p class="eyebrow"><span class="tiny-line"></span> RAFTURI DESCHISE, POVEȘTI NOI</p><h1 id="page-title">Catalogul <em>bibliotecii.</em></h1><p class="intro-copy">Găsește o carte. Ia-ți timp pentru o poveste.</p></div>
+  <div class="intro-aside"><span class="edition-label">DE LA PRIMA PAGINĂ</span><p>Literatură de aici<br>și de pretutindeni.</p><span class="small-rule"></span></div>
+</section>
+<section class="catalog-section" aria-label="Cărțile bibliotecii">
+  <div class="search-row">
+    <form class="search-form" method="get" role="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+      <label class="sr-only" for="search">Caută după titlul cărții</label>
+      <input id="search" name="q" value="{{ query }}" placeholder="Ce ai vrea să citești? Caută după titlu…" type="search">
+      <input type="hidden" name="status" value="{{ status }}">
+      <button type="submit">Caută <span aria-hidden="true">→</span></button>
+    </form>
+    <span class="search-hint">Un titlu este un început bun.</span>
+  </div>
+  <div class="catalog-toolbar">
+    <nav class="filter-tabs" aria-label="Filtrează după disponibilitate">
+      {% for value, label, number in [('all', 'Toate cărțile', total), ('available', 'Disponibile', available), ('borrowed', 'Împrumutate', total - available)] %}
+      <a href="{{ url_for('index', q=query, status=value) }}" class="{{ 'selected' if status == value else '' }}" {% if status == value %}aria-current="page"{% endif %}>{{ label }} <span>{{ number }}</span></a>
+      {% endfor %}
+    </nav>
+    <span class="sort-label">ORDINEA DIN CATALOG <span aria-hidden="true">↓</span></span>
+  </div>
+  {% if query %}<p class="search-summary">Rezultate pentru <strong>„{{ query }}”</strong> <a href="{{ url_for('index', status=status) }}">Șterge căutarea ×</a></p>{% endif %}
+  {% if books %}
+  <div class="table-scroll">
+    <table>
+      <caption class="sr-only">Cărți, autori, disponibilitate și operații de împrumut</caption>
+      <thead><tr><th scope="col" class="number-col">NR.</th><th scope="col">TITLU / AUTOR</th><th scope="col">DISPONIBILITATE</th><th scope="col"><span class="sr-only">Acțiuni</span></th></tr></thead>
+      <tbody>
+        {% for book in books %}
+        <tr>
+          <td class="book-number">{{ '%03d'|format(book.id) }}</td>
+          <td class="book-info"><a class="book-title" href="{{ url_for('detail', book_id=book.id) }}">{{ book.title }}</a><span class="book-author">{{ book.author }}</span></td>
+          <td><span class="availability {{ 'is-available' if book.available else 'is-borrowed' }}"><span aria-hidden="true"></span>{{ 'Disponibilă' if book.available else 'Împrumutată' }}</span></td>
+          <td class="action-cell">{% include '_action.html' %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state"><span class="empty-mark" aria-hidden="true">∅</span><h2>Nicio carte pe acest raft.</h2><p>Încearcă un alt titlu sau schimbă filtrul de disponibilitate.</p><a class="text-link" href="{{ url_for('index') }}">Înapoi la toate cărțile →</a></div>
+  {% endif %}
+  <div class="pagination-row"><p>{{ start }}–{{ end }} <span>din {{ count }} cărți{{ ' găsite' if query else '' }}</span></p>
+    <nav class="pagination" aria-label="Paginile catalogului">
+      {% if page > 1 %}<a href="{{ url_for('index', q=query, status=status, page=page-1) }}" aria-label="Pagina anterioară">←</a>{% else %}<span class="disabled" aria-hidden="true">←</span>{% endif %}
+      <span class="page-count">{{ page }} <span>/ {{ pages }}</span></span>
+      {% if page < pages %}<a href="{{ url_for('index', q=query, status=status, page=page+1) }}" aria-label="Pagina următoare">→</a>{% else %}<span class="disabled" aria-hidden="true">→</span>{% endif %}
+    </nav>
+  </div>
+</section>
+<aside class="reading-note"><span class="note-symbol" aria-hidden="true">“</span><p>Cărțile circulă. Poveștile rămân.</p><span>Împrumută. Citește. Adu mai departe.</span></aside>
+{% endblock %}

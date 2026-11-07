@@ -1,6 +1,65 @@
 # SASPS – Catalog de bibliotecă
 
+## Starea implementării — etapa 1
+
+### Nucleul și experimentele
+
+Planul concret pentru cele 4 persoane, contractul comun și criteriile primului
+milestone sunt în [docs/etapa-1.md](docs/etapa-1.md).
+
+Implementat acum (persoana 1): generator determinist SQLite, contract comun,
+variantă simplă de referință în `baseline/`, teste reutilizabile și benchmark.
+Implementările cu anti-pattern-uri și pattern-uri urmează conform planului.
+Secțiunile de mai jos descriu propunerea generală, nu funcționalități deja livrate;
+ipotezele despre avantaje vor fi verificate experimental.
+
+Rulare din rădăcina repo-ului cu Python 3.10+. Nucleul și benchmark-ul nu
+necesită pachete externe; interfața web și testele ei necesită Flask:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m catalog.data --books 1000 --path date/catalog.db
+python -m unittest tests.test_contract -v
+python -m benchmark.run --sizes 100 1000 10000 --repeats 10
+```
+
+### Interfața web locală
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m web
+```
+
+Deschide **http://127.0.0.1:5000** în browser. Oprești serverul cu `Ctrl+C`.
+La prima pornire se creează `date/demo.db`, cu 24 de cărți și autori pentru
+demonstrație. Modificările de disponibilitate se păstrează între porniri.
+Datele demonstrative sunt separate de datele sintetice din benchmark.
+
+Interfața include căutare după titlu, filtre de disponibilitate, pagini de câte
+8 cărți, fișa cărții și operații de împrumut/returnare. Folosește momentan
+baseline-ul. Alte implementări se pot injecta în `web.app.create_app` prin
+`catalog_factory`, fără schimbarea paginilor HTML.
+
+Pentru o bază deja generată sau un alt port:
+
+```bash
+python -m web --database date/catalog.db --port 5001
+```
+
+Testarea completă, după instalarea Flask:
+
+```bash
+python -m unittest discover -v
+```
+
 # Studiu comparativ: pattern-uri de acces la date vs anti-pattern-uri
+
+Această secțiune păstrează propunerea inițială a proiectului. Planul actualizat
+și delimitarea experimentelor sunt în [docs](docs/README.md); tabelele de mai
+jos nu reprezintă rezultate experimentale sau implementări deja disponibile.
 
 ## Descriere
 
@@ -8,10 +67,13 @@ Proiectul compară efectul pattern-urilor de proiectare și al anti-pattern-uril
 
 Aplicația este un catalog simplu de bibliotecă: cărți, autori și împrumuturi, stocate în SQLite. Aceleași funcționalități sunt implementate de două ori:
 
-- **varianta anti-pattern** – cod scris „direct”, așa cum apare des în proiecte reale;
+- **varianta anti-pattern** – probleme deliberate, precum N+1 și responsabilități amestecate;
 - **varianta cu pattern-uri** – același comportament, organizat cu pattern-uri de proiectare.
 
-Ambele variante rulează pe aceleași date și sunt măsurate cu aceleași teste, deci diferențele vin doar din proiectare.
+Variantele vor rula pe aceleași date și vor respecta același contract.
+O referință simplă (`baseline`) și controale intermediare vor separa efectele
+SQL-ului, cache-ului și organizării codului; simpla folosire a acelorași teste
+nu izolează toate aceste contribuții.
 
 ## Obiective
 

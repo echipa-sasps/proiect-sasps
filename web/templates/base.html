@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f4ee">
+  <title>{% block title %}Catalog{% endblock %} · Biblioteca</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <a class="skip-link" href="#main">Sari la conținut</a>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="{{ url_for('index') }}" aria-label="Biblioteca, pagina principală">
+        <span class="brand-mark" aria-hidden="true">b.</span>
+        <span>Biblioteca<span class="brand-caption">CATALOG DE CARTE</span></span>
+      </a>
+      <nav aria-label="Navigare principală"><a class="nav-current" href="{{ url_for('index') }}">Catalog<span aria-hidden="true"> ↗</span></a></nav>
+      <span class="header-note">Un loc pentru următoarea lectură.</span>
+    </header>
+    <main id="main">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="notice {{ category }}" role="status"><span>{{ message }}</span><a href="{{ request.path }}" aria-label="Închide mesajul">×</a></div>
+        {% endfor %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer"><span>Biblioteca <span class="footer-dot">·</span> Catalog & împrumuturi</span><span>O pagină nouă, de fiecare dată.</span></footer>
+  </div>
+</body>
+</html>

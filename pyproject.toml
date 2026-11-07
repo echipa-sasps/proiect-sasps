@@ -1,0 +1,10 @@
+[project]
+name = "catalog-sasps"
+version = "0.1.0"
+description = "Experimente comparative pentru accesul la date"
+requires-python = ">=3.10"
+dependencies = ["Flask>=3.1,<4"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
