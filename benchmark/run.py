@@ -9,12 +9,17 @@ import tempfile
 from time import perf_counter
 import tracemalloc
 
+from antipattern.catalog import AntiPatternCatalog, AntiPatternJoinCatalog
 from baseline.catalog import BaselineCatalog
 from catalog.data import create_database
 
 
 # Colegii adauga aici fabricile; toate primesc Path si respecta Catalog.
-VARIANTS = {"baseline": BaselineCatalog}
+VARIANTS = {
+    "baseline": BaselineCatalog,
+    "antipattern": AntiPatternCatalog,
+    "antipattern_join": AntiPatternJoinCatalog,
+}
 
 
 def run(output: Path, sizes: list[int], repeats: int, variants: list[str]) -> None:
