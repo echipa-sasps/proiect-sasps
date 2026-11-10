@@ -12,6 +12,7 @@ import tracemalloc
 from antipattern.catalog import AntiPatternCatalog, AntiPatternJoinCatalog
 from baseline.catalog import BaselineCatalog
 from catalog.data import create_database
+from pattern.cache_proxy import CachedLibraryService
 from pattern.service import LibraryService
 
 
@@ -21,6 +22,7 @@ VARIANTS = {
     "antipattern": AntiPatternCatalog,
     "antipattern_join": AntiPatternJoinCatalog,
     "pattern": LibraryService,
+    "pattern_cache": CachedLibraryService,
 }
 
 
