@@ -12,6 +12,7 @@ import tracemalloc
 from antipattern.catalog import AntiPatternCatalog, AntiPatternJoinCatalog
 from baseline.catalog import BaselineCatalog
 from catalog.data import create_database
+from pattern.service import LibraryService
 
 
 # Colegii adauga aici fabricile; toate primesc Path si respecta Catalog.
@@ -19,6 +20,7 @@ VARIANTS = {
     "baseline": BaselineCatalog,
     "antipattern": AntiPatternCatalog,
     "antipattern_join": AntiPatternJoinCatalog,
+    "pattern": LibraryService,
 }
 
 
