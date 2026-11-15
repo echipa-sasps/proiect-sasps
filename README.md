@@ -1,60 +1,5 @@
 # SASPS – Catalog de bibliotecă
 
-## Starea implementării — etapa 1
-
-### Nucleul și experimentele
-
-Planul concret pentru cele 4 persoane, contractul comun și criteriile primului
-milestone sunt în [docs/etapa-1.md](docs/etapa-1.md).
-
-Implementat acum (persoana 1): generator determinist SQLite, contract comun,
-variantă simplă de referință în `baseline/`, teste reutilizabile și benchmark.
-Implementările cu anti-pattern-uri și pattern-uri urmează conform planului.
-Secțiunile de mai jos descriu propunerea generală, nu funcționalități deja livrate;
-ipotezele despre avantaje vor fi verificate experimental.
-
-Rulare din rădăcina repo-ului cu Python 3.10+. Nucleul și benchmark-ul nu
-necesită pachete externe; interfața web și testele ei necesită Flask:
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m catalog.data --books 1000 --path date/catalog.db
-python -m unittest tests.test_contract -v
-python -m benchmark.run --sizes 100 1000 10000 --repeats 10
-```
-
-### Interfața web locală
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
-python -m web
-```
-
-Deschide **http://127.0.0.1:5000** în browser. Oprești serverul cu `Ctrl+C`.
-La prima pornire se creează `date/demo.db`, cu 24 de cărți și autori pentru
-demonstrație. Modificările de disponibilitate se păstrează între porniri.
-Datele demonstrative sunt separate de datele sintetice din benchmark.
-
-Interfața include căutare după titlu, filtre de disponibilitate, pagini de câte
-8 cărți, fișa cărții și operații de împrumut/returnare. Folosește momentan
-baseline-ul. Alte implementări se pot injecta în `web.app.create_app` prin
-`catalog_factory`, fără schimbarea paginilor HTML.
-
-Pentru o bază deja generată sau un alt port:
-
-```bash
-python -m web --database date/catalog.db --port 5001
-```
-
-Testarea completă, după instalarea Flask:
-
-```bash
-python -m unittest discover -v
-```
-
 # Studiu comparativ: pattern-uri de acces la date vs anti-pattern-uri
 
 Această secțiune păstrează propunerea inițială a proiectului. Planul actualizat
@@ -174,6 +119,37 @@ radon cc antipattern pattern -s -a
 radon mi antipattern pattern -s
 ```
 
+### Interfața web locală
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m web
+```
+
+Deschide **http://127.0.0.1:5000** în browser. Oprești serverul cu `Ctrl+C`.
+La prima pornire se creează `date/demo.db`, cu 24 de cărți și autori pentru
+demonstrație. Modificările de disponibilitate se păstrează între porniri.
+Datele demonstrative sunt separate de datele sintetice din benchmark.
+
+Interfața include căutare după titlu, filtre de disponibilitate, pagini de câte
+8 cărți, fișa cărții și operații de împrumut/returnare. Folosește momentan
+baseline-ul. Alte implementări se pot injecta în `web.app.create_app` prin
+`catalog_factory`, fără schimbarea paginilor HTML.
+
+Pentru o bază deja generată sau un alt port:
+
+```bash
+python -m web --database date/catalog.db --port 5001
+```
+
+Testarea completă, după instalarea Flask:
+
+```bash
+python -m unittest discover -v
+```
+
 ## Legătura cu structura lucrării
 
 | Capitol | Ce conține din proiect |
@@ -186,3 +162,5 @@ radon mi antipattern pattern -s
 | 6. Impactul anti-pattern-urilor | rezultatele variantei anti-pattern și cauzele lor |
 | 7. Concluzii | când merită fiecare pattern și când nu |
 | 8. Bibliografie | Gamma et al. (1994), Fowler (2002), Brown et al. – *AntiPatterns* (1998) |
+
+
