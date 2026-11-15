@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ book.title }}{% endblock %}
+{% block content %}
+<a class="back-link" href="{{ url_for('index') }}">← Înapoi la catalog</a>
+<article class="book-detail">
+  <div class="book-jacket" aria-hidden="true"><span>BIBLIOTECA<br>COLECȚIA DE LITERATURĂ</span><div><h2>{{ book.title }}</h2><p>{{ book.author }}</p></div><span>NR. {{ '%03d'|format(book.id) }} <span class="jacket-mark">b.</span></span></div>
+  <div class="detail-copy"><p class="eyebrow">FIȘA CĂRȚII / {{ '%03d'|format(book.id) }}</p><h1>{{ book.title }}</h1><p class="detail-author">{{ book.author }}</p><div class="detail-status"><span class="availability {{ 'is-available' if book.available else 'is-borrowed' }}"><span aria-hidden="true"></span>{{ 'Disponibilă pentru împrumut' if book.available else 'Împrumutată momentan' }}</span><p>{{ 'Cartea te așteaptă. O poți împrumuta folosind butonul de mai jos.' if book.available else 'Dacă ai terminat lectura, înregistrează returnarea pentru a o face disponibilă din nou.' }}</p></div>{% set view = 'detail' %}{% include '_action.html' %}<p class="detail-footnote">Disponibilitatea se actualizează după fiecare împrumut sau returnare.</p></div>
+</article>
+{% endblock %}

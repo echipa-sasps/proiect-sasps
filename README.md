@@ -2,16 +2,23 @@
 
 # Studiu comparativ: pattern-uri de acces la date vs anti-pattern-uri
 
+Această secțiune păstrează propunerea inițială a proiectului. Planul actualizat
+și delimitarea experimentelor sunt în [docs](docs/README.md); tabelele de mai
+jos nu reprezintă rezultate experimentale sau implementări deja disponibile.
+
 ## Descriere
 
 Proiectul compară efectul pattern-urilor de proiectare și al anti-pattern-urilor asupra **performanței**, **scalabilității**, **consumului de resurse** și **mentenabilității** unei aplicații care lucrează cu o bază de date.
 
 Aplicația este un catalog simplu de bibliotecă: cărți, autori și împrumuturi, stocate în SQLite. Aceleași funcționalități sunt implementate de două ori:
 
-- **varianta anti-pattern** – cod scris „direct”, așa cum apare des în proiecte reale;
+- **varianta anti-pattern** – probleme deliberate, precum N+1 și responsabilități amestecate;
 - **varianta cu pattern-uri** – același comportament, organizat cu pattern-uri de proiectare.
 
-Ambele variante rulează pe aceleași date și sunt măsurate cu aceleași teste, deci diferențele vin doar din proiectare.
+Variantele vor rula pe aceleași date și vor respecta același contract.
+O referință simplă (`baseline`) și controale intermediare vor separa efectele
+SQL-ului, cache-ului și organizării codului; simpla folosire a acelorași teste
+nu izolează toate aceste contribuții.
 
 ## Obiective
 
@@ -112,6 +119,37 @@ radon cc antipattern pattern -s -a
 radon mi antipattern pattern -s
 ```
 
+### Interfața web locală
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m web
+```
+
+Deschide **http://127.0.0.1:5000** în browser. Oprești serverul cu `Ctrl+C`.
+La prima pornire se creează `date/demo.db`, cu 24 de cărți și autori pentru
+demonstrație. Modificările de disponibilitate se păstrează între porniri.
+Datele demonstrative sunt separate de datele sintetice din benchmark.
+
+Interfața include căutare după titlu, filtre de disponibilitate, pagini de câte
+8 cărți, fișa cărții și operații de împrumut/returnare. Folosește momentan
+baseline-ul. Alte implementări se pot injecta în `web.app.create_app` prin
+`catalog_factory`, fără schimbarea paginilor HTML.
+
+Pentru o bază deja generată sau un alt port:
+
+```bash
+python -m web --database date/catalog.db --port 5001
+```
+
+Testarea completă, după instalarea Flask:
+
+```bash
+python -m unittest discover -v
+```
+
 ## Legătura cu structura lucrării
 
 | Capitol | Ce conține din proiect |
@@ -124,3 +162,5 @@ radon mi antipattern pattern -s
 | 6. Impactul anti-pattern-urilor | rezultatele variantei anti-pattern și cauzele lor |
 | 7. Concluzii | când merită fiecare pattern și când nu |
 | 8. Bibliografie | Gamma et al. (1994), Fowler (2002), Brown et al. – *AntiPatterns* (1998) |
+
+
